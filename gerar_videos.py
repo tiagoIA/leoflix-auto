@@ -1,4 +1,6 @@
 import json
+import os
+import subprocess
 
 def extrair_id(link):
     if "watch?v=" in link:
@@ -14,7 +16,7 @@ def gerar_json():
         video_id = extrair_id(link)
         embed_link = f"https://www.youtube.com/embed/{video_id}?rel=0&modestbranding=1"
         videos.append({
-            "titulo": f"Vídeo LeoFlix {video_id}",
+            "titulo": f"Vídeo LeoFlix ({video_id})",
             "link": embed_link
         })
 
@@ -22,6 +24,20 @@ def gerar_json():
     with open("videos.json", "w", encoding="utf-8") as f:
         json.dump(estrutura, f, indent=2, ensure_ascii=False)
 
+def git_push():
+    subprocess.run(["git", "config", "--global", "user.name", "LeoFlix Auto"])
+    subprocess.run(["git", "config", "--global", "user.email", "leoflix@auto.com"])
+
+    subprocess.run(["git", "add", "videos.json"])
+    subprocess.run(["git", "commit", "-m", "Atualização automática do catálogo"])
+    subprocess.run([
+        "git", "push",
+        f"https://{os.environ['GH_TOKEN']}@github.com/tiagoIA/leoflix-auto.git",
+        "main"
+    ])
+
 if __name__ == "__main__":
     gerar_json()
-    print("✅ videos.json gerado com sucesso.")
+    git_push()
+    print("✅ Catálogo atualizado com sucesso.")
+
