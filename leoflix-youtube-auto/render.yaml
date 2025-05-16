@@ -1,0 +1,7 @@
+services:
+  - type: cron
+    name: LeoFlix Auto Update
+    schedule: "@daily"
+    runtime: python
+    buildCommand: ""
+    startCommand: "python gerar_videos.py"
