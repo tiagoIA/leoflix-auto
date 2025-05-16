@@ -1,6 +1,4 @@
 import json
-import os
-import subprocess
 
 def extrair_id(link):
     if "watch?v=" in link:
@@ -11,33 +9,36 @@ def gerar_json():
     with open("links.txt", "r", encoding="utf-8") as f:
         links = [l.strip() for l in f if l.strip()]
 
-    videos = []
+    videos_por_canal = {}
+
     for link in links:
         video_id = extrair_id(link)
         embed_link = f"https://www.youtube.com/embed/{video_id}?rel=0&modestbranding=1"
-        videos.append({
-            "titulo": f"Vídeo LeoFlix ({video_id})",
-            "link": embed_link
+        thumbnail = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+
+        titulo = f"Título do vídeo {video_id}"
+        canal = "LeoFlix Kids"
+
+        if canal not in videos_por_canal:
+            videos_por_canal[canal] = []
+
+        videos_por_canal[canal].append({
+            "titulo": titulo,
+            "link": embed_link,
+            "thumbnail": thumbnail
         })
 
-    estrutura = [{"canal": "LeoFlix Kids", "videos": videos}]
+    estrutura = [
+        {
+            "canal": canal,
+            "videos": videos
+        } for canal, videos in videos_por_canal.items()
+    ]
+
     with open("videos.json", "w", encoding="utf-8") as f:
         json.dump(estrutura, f, indent=2, ensure_ascii=False)
 
-def git_push():
-    subprocess.run(["git", "config", "--global", "user.name", "LeoFlix Auto"])
-    subprocess.run(["git", "config", "--global", "user.email", "leoflix@auto.com"])
-
-    subprocess.run(["git", "add", "videos.json"])
-    subprocess.run(["git", "commit", "-m", "Atualização automática do catálogo"])
-    subprocess.run([
-        "git", "push",
-        f"https://{os.environ['GH_TOKEN']}@github.com/tiagoIA/leoflix-auto.git",
-        "main"
-    ])
+    print("✅ videos.json gerado com thumbnails.")
 
 if __name__ == "__main__":
     gerar_json()
-    git_push()
-    print("✅ Catálogo atualizado com sucesso.")
-
