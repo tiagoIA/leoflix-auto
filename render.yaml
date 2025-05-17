@@ -1,10 +1,9 @@
 services:
   - type: web
     name: leoflix-admin
-    runtime: python
-    buildCommand: ""
-    startCommand: "python app.py"
+    env: python
+    branch: main
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python admin.py"
     plan: free
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.10
+    region: oregon
