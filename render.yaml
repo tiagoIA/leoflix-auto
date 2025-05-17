@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: leoflix-admin
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python admin.py"
+    plan: free
