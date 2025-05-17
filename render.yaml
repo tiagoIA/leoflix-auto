@@ -1,7 +1,10 @@
 services:
-  - type: cron
-    name: LeoFlix Auto Update
-    schedule: "@daily"
+  - type: web
+    name: leoflix-admin
     runtime: python
     buildCommand: ""
-    startCommand: "python gerar_videos.py"
+    startCommand: "python app.py"
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10
