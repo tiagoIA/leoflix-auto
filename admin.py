@@ -79,6 +79,7 @@ def git_push():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    os.makedirs(LINKS_DIR, exist_ok=True)
     pastas = [f.replace(".txt", "") for f in os.listdir(LINKS_DIR) if f.endswith(".txt")]
     if request.method == "POST":
         link = request.form.get("link")
